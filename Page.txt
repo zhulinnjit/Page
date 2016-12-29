@@ -1,0 +1,67 @@
+/**
+  * ページ送り作成
+  */
+  createPage = function(pageNum) {
+    var pageListElm = document.getElementById("page_list");
+    deleteTable(pageListElm);
+
+    if (pageNum < 2){
+      pageListElm.appendChild(createPageElm(pageNum, "前へ", 1));
+    } else {
+      pageListElm.appendChild(createPageElm(pageNum, "前へ", pageNum - 1));
+    }
+    var allPageSize = Math.ceil(300 / 25);
+    // 開始ページ番号の算出
+    var start = 1;
+    if (5 < allPageSize) {
+      var half =  Math.floor(5 / 2);
+      if (pageNum - half > 1) {
+        start = pageNum - half;
+      }
+      if (allPageSize <= pageNum + half) {
+        start = start - half + (allPageSize-pageNum);
+      }
+    }
+    var outCnt = 1;
+    for (var i = start; i <= allPageSize; i++) {
+      pageListElm.appendChild(createPageElm(pageNum, i, i));
+    if (5 <= outCnt){
+      break;
+    }
+      outCnt++;
+    }
+    if (pageNum + 1 < allPageSize){
+      pageListElm.appendChild(createPageElm(pageNum, "次へ", pageNum + 1));
+    } else {
+      pageListElm.appendChild(createPageElm(pageNum, "次へ", allPageSize));
+    }
+    pageListElm.appendChild(createPageElm(pageNum, "最後へ", allPageSize));
+  };
+
+  /**
+  * データ削除
+  */
+  deleteTable = function(Elm) {
+    for (var i = Elm.childNodes.length - 1; i >= 0; i--) {
+      Elm.removeChild(Elm.childNodes[i]);
+    }
+  };
+
+  /**
+  * タグ作成（ページ送り用）
+  */
+createPageElm = function(pageNum,text,page) {
+  var liElm = document.createElement("li");
+  var txtObj = document.createTextNode(text);
+  if (pageNum == page) {
+    liElm.className = 'On';
+    liElm.appendChild(txtObj);
+  } else {
+    var aElm = document.createElement("a");
+    var attr = "javascript:createPage(" + page + ");"
+    aElm.setAttribute("href", attr);
+    aElm.appendChild(txtObj);
+    liElm.appendChild(aElm);
+  }
+  return liElm;
+  }
